@@ -1,25 +1,32 @@
-const Traveller = require('./Traveller');
-const Location = require('./Location');
-const Trip = require('./Trip');
+const Post = require('./posts');
+const Comment = require('./comments');
+const User = require('./user');
 
-Traveller.belongsToMany(Location, {
+User.hasMany(Post, {
   // Define the third table needed to store the foreign keys
-  through: {
-    model: Trip,
-    unique: false
-  },
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
   // Define an alias for when data is retrieved
-  as: 'planned_trips'
+  // as: 'location_travellers'
+});
+Post.belongsTo(User, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
+});
+User.hasMany(Comment, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
+});
+Comment.belongsTo(User, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
+});
+Post.hasMany(Comment, {
+  foreignKey: 'post_id',
+  onDelete: 'CASCADE'
+});
+Comment.belongsTo(Post, {
+  foreignKey: 'post_id'
 });
 
-Location.belongsToMany(Traveller, {
-  // Define the third table needed to store the foreign keys
-  through: {
-    model: Trip,
-    unique: false
-  },
-  // Define an alias for when data is retrieved
-  as: 'location_travellers'
-});
-
-module.exports = { Traveller, Location, Trip };
+module.exports = { Post, Comment, User };
